@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Swap files
+*.swp
+*/*.swp
+
+# Bash run file
+run.sh
