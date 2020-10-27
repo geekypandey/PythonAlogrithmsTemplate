@@ -1,7 +1,9 @@
 import random
 import unittest
+import sys
 
-from algorithms import any_of, all_of, none_of, sort, binary_search, unique
+from algorithms import any_of, all_of, none_of, sort, binary_search, unique, \
+        lexicographical_compare
 
 
 class AnyOfTestCase(unittest.TestCase):
@@ -137,6 +139,46 @@ class UniqueTestCase(unittest.TestCase):
     def test_three(self):
         arr = [1,2,2,3,2,4,4,5,6,5]
         self.assertEqual(unique(arr), [1,2,3,2,4,5,6,5])
+
+
+class LexicographicalCompareTestCase(unittest.TestCase):
+
+    def test_empty(self):
+        first = []
+        second = []
+        self.assertEqual(lexicographical_compare(first, second), False)
+
+    def test_strings_true(self):
+        first = "Bar"
+        second = "Foo"
+        self.assertEqual(lexicographical_compare(first, second), True)
+
+    def test_strings_false(self):
+        first = "Foo"
+        second = "Bar"
+        self.assertEqual(lexicographical_compare(first, second), False)
+
+    def test_strings_almost_equal(self):
+        first = "Fooo"
+        second = "Foo"
+        self.assertEqual(lexicographical_compare(first, second), False)
+
+    def test_strings_and_list(self):
+        first = "Foo"
+        second = ['B', 'a', 'r']
+        self.assertEqual(lexicographical_compare(first, second), False)
+
+    def test_list_and_list(self):
+        first = ['F', 'o', 'o']
+        second = ['B', 'a', 'r']
+        self.assertEqual(lexicographical_compare(first, second), False)
+
+    @unittest.skipIf(sys.version_info < (3,6), "dictionary not ordered in version below 3.6")
+    def test_list_and_dictionary(self):
+        first = ['B', 'a', 'r']
+        second = {'F':1, 'o': 2, 'f':3}
+        self.assertEqual(lexicographical_compare(first, second), True)
+
 
 
 if __name__ == '__main__':

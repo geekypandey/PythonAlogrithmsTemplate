@@ -4,3 +4,4 @@ from .none_of import none_of
 from .sort import sort
 from .binary_search import binary_search
 from .unique import unique
+from .lexicographical_compare import lexicographical_compare
