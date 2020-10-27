@@ -1,7 +1,7 @@
 import random
 import unittest
 
-from algorithms import any_of, all_of, none_of, sort, binary_search
+from algorithms import any_of, all_of, none_of, sort, binary_search, unique
 
 
 class AnyOfTestCase(unittest.TestCase):
@@ -118,6 +118,25 @@ class BinarySearchTestCase(unittest.TestCase):
         arr = [random.randint(-500, 500) for _ in range(500)]
         arr.sort()
         self.assertEqual(binary_search(arr, 999), False)
+
+
+class UniqueTestCase(unittest.TestCase):
+
+    def test_empty(self):
+        arr = []
+        self.assertEqual(unique(arr), [])
+
+    def test_one(self):
+        arr = [1,1,2,2,2,3,4,5,6,6]
+        self.assertEqual(unique(arr), [1,2,3,4,5,6])
+
+    def test_two(self):
+        arr = [1,2,3,4,5,6]
+        self.assertEqual(unique(arr), [1,2,3,4,5,6])
+
+    def test_three(self):
+        arr = [1,2,2,3,2,4,4,5,6,5]
+        self.assertEqual(unique(arr), [1,2,3,2,4,5,6,5])
 
 
 if __name__ == '__main__':

@@ -5,3 +5,4 @@ from .sort import sort
 from .binary_search import binary_search
 from .for_each import for_each
 from .partition import partition
+from .unique import unique
