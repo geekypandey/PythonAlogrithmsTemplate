@@ -23,6 +23,10 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Running Unit tests
+    - name: Install dependencies
       run: |
-          python -m unittest discover tests -v
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+    - name: Running Unit tests using tox
+      run: |
+          tox
