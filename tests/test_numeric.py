@@ -1,77 +1,56 @@
-import random
 import unittest
 
-from numeric import accumulate, adjacent_difference, partial_sum
+from hypothesis import given
+import hypothesis.strategies as st
+
+from numeric import accumulate
+from numeric import adjacent_difference
+from numeric import partial_sum
 
 
-class AccumuateTestCase(unittest.TestCase):
+class AccumulateTestCase(unittest.TestCase):
 
-    def test_empty(self):
-        arr = []
-        self.assertEqual(accumulate(arr), 0)
-
-    def test_one(self):
-        arr = [1,2,3,4,5]
-        self.assertEqual(accumulate(arr), 15)
-
-    def test_with_initial_value(self):
-        arr = [1,2,3,4,5]
-        self.assertEqual(accumulate(arr, 5), 20)
-
-    def test_on_random_list(self):
-        arr = [random.randint(1, 500) for _ in range(500)]
+    @given(st.lists(st.integers()))
+    def test_accumulate_without_init(self, arr):
         self.assertEqual(accumulate(arr), sum(arr))
 
-    def test_on_random_list_with_initial_value(self):
-        arr = [random.randint(1, 500) for _ in range(500)]
-        self.assertEqual(accumulate(arr, 50), sum(arr) + 50)
+    @given(st.lists(st.integers()), st.integers())
+    def test_accumulate_with_init(self, arr, init):
+        self.assertEqual(accumulate(arr, init=init), sum(arr) + init)
 
 
 class AdjacentDiffereceTestCase(unittest.TestCase):
 
-    def _adjacent_difference(self, arr):
-        ans = []
-        n = len(arr)
-        for i in range(1, n):
-            ans.append(arr[i]-arr[i-1])
-        return ans
+    def _is_invariant_satisfied(self, out, arr):
+        if len(arr) < 2:
+            return not out
+        else:
+            if len(out) != len(arr) - 1:
+                return False
+            return (sum(out) == (arr[-1] - arr[0]))
 
-    def test_empty(self):
-        arr = []
-        self.assertEqual(adjacent_difference(arr), self._adjacent_difference(arr))
-
-    def test_one(self):
-        arr = [1,2,3,4,5]
-        self.assertEqual(adjacent_difference(arr), self._adjacent_difference(arr))
-
-    def test_on_random_list(self):
-        arr = [random.randint(-500,500) for _ in range(500)]
-        self.assertEqual(adjacent_difference(arr), self._adjacent_difference(arr))
+    @given(st.lists(st.integers()))
+    def test_adjacent_difference(self, arr):
+        out = adjacent_difference(arr)
+        self.assertTrue(self._is_invariant_satisfied(out, arr))
 
 
 class PartialSumTestCase(unittest.TestCase):
 
-    def _partial_sum(self, arr):
-        ans = []
-        for a in arr:
-            if len(ans) == 0:
-                ans.append(a)
-            else:
-                ans.append(a + ans[-1])
-        return ans
+    def _is_invariant_satisfied(self, out, arr):
+        n = len(arr)
+        if len(out) != len(arr):
+            return False
+        for idx in reversed(range(1, n)):
+            if (out[idx] - out[idx-1]) != arr[idx]:
+                return False
+        return True
 
-    def test_empty(self):
-        arr = []
-        self.assertEqual(partial_sum(arr), self._partial_sum(arr))
+    @given(st.lists(st.integers()))
+    def test_partial_sum_without_func(self, arr):
+        out = partial_sum(arr)
+        self.assertTrue(self._is_invariant_satisfied(out, arr))
 
-    def test_one(self):
-        arr = [1,2,3,4,5]
-        self.assertEqual(partial_sum(arr), self._partial_sum(arr))
-
-    def test_func_parameter(self):
-        arr = [1,2,3]
-        self.assertEqual(partial_sum(arr, lambda x, y: x*y), [1,2,6])
-
-    def test_on_random_list(self):
-        arr = [random.randint(-500,500) for _ in range(500)]
-        self.assertEqual(partial_sum(arr), self._partial_sum(arr))
+    @given(st.lists(st.integers()))
+    def test_partial_sum_with_func(self, arr):
+        pass
