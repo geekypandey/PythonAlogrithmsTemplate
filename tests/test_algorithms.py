@@ -17,6 +17,7 @@ from algorithms import make_heap
 from algorithms import push_heap
 from algorithms import pop_heap
 from algorithms import partition
+from algorithms import sort_heap
 
 
 class AnyOfTestCase(unittest.TestCase):
@@ -260,3 +261,29 @@ class PartitionTestCase(unittest.TestCase):
         out = partition(arr, pred)
         self.assertTrue(self._is_invariant_satisfied(out, pred))
         self.assertEqual(collections.Counter(arr), collections.Counter(out))
+
+
+class HeapSortTestCase(unittest.TestCase):
+
+    def _is_invariant_satisfied(self, out, arr, reverse=False):
+        return out == sorted(arr, reverse=reverse)
+
+    @given(st.lists(st.integers()))
+    def test_sort_heap_ascending_integer(self, arr):
+        out = sort_heap(arr)
+        self.assertTrue(self._is_invariant_satisfied(out, arr))
+
+    @given(st.lists(st.integers()))
+    def test_sort_heap_descending_integer(self, arr):
+        out = sort_heap(arr, reverse=True)
+        self.assertTrue(self._is_invariant_satisfied(out, arr, reverse=True))
+
+    @given(st.lists(st.text()))
+    def test_sort_heap_ascending_string(self, arr):
+        out = sort_heap(arr)
+        self.assertTrue(self._is_invariant_satisfied(out, arr))
+
+    @given(st.lists(st.text()))
+    def test_sort_heap_descending_string(self, arr):
+        out = sort_heap(arr, reverse=True)
+        self.assertTrue(self._is_invariant_satisfied(out, arr, reverse=True))
